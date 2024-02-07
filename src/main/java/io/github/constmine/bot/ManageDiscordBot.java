@@ -15,7 +15,8 @@ import java.util.EnumSet;
 public class ManageDiscordBot {
 
     public static void main(String[] args) {
-        ManageDiscordToken token = new ManageDiscordToken();
+//        ManageDiscordToken token = new ManageDiscordToken("token");
+        ManageDiscordToken token = new ManageDiscordToken("testToken");
         EnumSet<GatewayIntent> intents = EnumSet.of(
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.DIRECT_MESSAGES,
@@ -29,7 +30,7 @@ public class ManageDiscordBot {
                 .enableIntents(intents)
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .setActivity(Activity.customStatus("니들 채팅기록보는중"))
+                .setActivity(Activity.customStatus("명령어 기다리는 중 ..."))
                 .addEventListeners(new MessageReceiveCommand(), new SlashCommandListener())
                 .build();
 

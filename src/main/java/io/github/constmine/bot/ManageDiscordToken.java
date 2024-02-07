@@ -7,8 +7,10 @@ import java.util.Properties;
 public class ManageDiscordToken {
 
     private String DiscordBotToken;
+    private String PropertyName;
 
-    public ManageDiscordToken() {
+    public ManageDiscordToken(String PropertyName) {
+        this.PropertyName = PropertyName;
         settingToken();
     }
 
@@ -16,7 +18,7 @@ public class ManageDiscordToken {
         try(InputStream input = getClass().getClassLoader().getResourceAsStream("Application.propertise")) {
             Properties properties = new Properties();
             properties.load(input);
-            DiscordBotToken = properties.getProperty("token");
+            DiscordBotToken = properties.getProperty(PropertyName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

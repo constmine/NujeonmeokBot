@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 .gitignore
 Application.propertise
+!**/src/main/resources/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
