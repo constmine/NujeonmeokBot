@@ -8,9 +8,11 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,14 +49,15 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack audioTrack) {
                 musicManager.scheduler.queue(audioTrack);
 
-                textChannel.sendMessage(
-                        "추가중입니다.**\n" +
-                             audioTrack.getInfo().title +
-                             "** 제작자 **" +
-                             audioTrack.getInfo().author + "**"
-                ).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setTitle("**" + audioTrack.getInfo().title + "**").
+                        setDescription("**" + audioTrack.getInfo().title + "**").
+                        addField("Field 1 ", "1", false).
+                        addField("Field 2 ", "2", true).
+                        setColor(Color.BLUE);
 
 
+                textChannel.sendMessageEmbeds(builder.build()).queue();
             }
 
             @Override
@@ -62,12 +65,34 @@ public class PlayerManager {
                 final List<AudioTrack> tracks = audioPlaylist.getTracks();
                 if(!tracks.isEmpty()) {
                     musicManager.scheduler.queue(tracks.get(0));
-                    textChannel.sendMessage(
-                            "추가중입니다.**\n" +
-                                    tracks.get(0).getInfo().title +
-                                    "** 제작자 **" +
-                                    tracks.get(0).getInfo().author + "**"
-                    ).queue();
+
+                    System.out.println(tracks.get(0).getInfo().uri);
+
+                    YouTube youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), null)
+                            .setApplicationName("MyBot")
+                            .build();
+
+                    try {
+                        String videoId = extractVideoId(youtubeLink);
+
+                        YouTube.Videos.List listRequest = youtube.videos().list(Collections.singletonList("snippet"));
+                        listRequest.setId(Collections.singletonList(videoId));
+                        VideoListResponse listResponse = listRequest.setKey(YOUTUBE_API_KEY).execute();
+                        Video video = listResponse.getItems().get(0);
+
+                        // 썸네일 가져오기
+                        Thumbnail thumbnail = video.getSnippet().getThumbnails().getDefault();
+
+
+                        EmbedBuilder builder = new EmbedBuilder();
+                    builder.setTitle("**" + tracks.get(0).getInfo().title + "**").
+                            setDescription("**" + tracks.get(0).getInfo().title + "**").
+                            setThumbnail("https://cdn.pixabay.com/photo/2017/08/01/22/38/flash-2568381_1280.jpg").
+                            addField("Field 1 ", "1", false).
+                            addField("Field 2 ", "2", true).
+                            setColor(Color.YELLOW);
+
+                    textChannel.sendMessageEmbeds(builder.build()).queue();
                 }
             }
 
