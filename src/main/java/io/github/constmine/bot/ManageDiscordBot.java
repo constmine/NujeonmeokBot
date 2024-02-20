@@ -2,7 +2,7 @@ package io.github.constmine.bot;
 
 import io.github.constmine.bot.commands.MessageReceiveCommand;
 import io.github.constmine.bot.commands.SlashCommandListener;
-import net.dv8tion.jda.api.JDA;
+import io.github.constmine.bot.events.ButtonClickEvent;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -15,8 +15,8 @@ import java.util.EnumSet;
 public class ManageDiscordBot {
 
     public static void main(String[] args) {
-//        ManageDiscordToken token = new ManageDiscordToken("token");
-        ManageDiscordToken token = new ManageDiscordToken("testToken");
+//        String token = APITokenManage.getToken("token");
+        String token = APITokenManage.getToken("testToken");
         EnumSet<GatewayIntent> intents = EnumSet.of(
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.DIRECT_MESSAGES,
@@ -26,12 +26,15 @@ public class ManageDiscordBot {
                 GatewayIntent.GUILD_VOICE_STATES);
 
 
-        JDABuilder.createDefault(token.getDiscordBotToken())
+        JDABuilder.createDefault(token)
                 .enableIntents(intents)
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setActivity(Activity.customStatus("명령어 기다리는 중 ..."))
-                .addEventListeners(new MessageReceiveCommand(), new SlashCommandListener())
+                .addEventListeners(
+                        new MessageReceiveCommand(),
+                        new SlashCommandListener(),
+                        new ButtonClickEvent())
                 .build();
 
     }

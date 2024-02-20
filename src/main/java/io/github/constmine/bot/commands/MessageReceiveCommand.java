@@ -44,6 +44,7 @@ public class MessageReceiveCommand extends ListenerAdapter {
                 break;
 
             case "#노래" :
+            case "#p" :
             case "#Play" :
             case "#play" :
                 PlayCommand playCommand = new PlayCommand(event);

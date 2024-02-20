@@ -22,7 +22,7 @@ public class PlayCommand extends Command {
     @Override
     public void executeCommand() {
         if(!event.getMember().getVoiceState().inAudioChannel()) {
-            event.getChannel().sendMessage("소속해 있는 보이스 채널이 없습니다.").queue();;
+            event.getChannel().sendMessage("소속해 있는 보이스 채널이 없습니다.").queue();
             return;
         }
 
@@ -33,18 +33,27 @@ public class PlayCommand extends Command {
             audioManager.openAudioConnection(memberChannel);
         }
 
-        String link = String.join(" ", event.getMessage().getContentDisplay().replace("#play", ""));
+        String link = convertCommandToUrl("#play ");
+
         if(!isUrl(link)) {
-            link = "ytsearch:" + link + "노래";
+            link = generateSearchUrl(link);
         }
 
-        System.out.println(link);
+        event.getMember();
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
+    }
 
-        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
+    public String convertCommandToUrl(String command) {
+        return event.getMessage().getContentDisplay().replace(command, "");
+    }
+
+    public String generateSearchUrl(String link) {
+        return "ytsearch: " + link + " 노래";
     }
 
     public boolean isUrl(String url) {
         try {
+            System.out.println(url);
             new URI(url);
             return true;
         } catch (URISyntaxException e) {
